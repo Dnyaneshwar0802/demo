@@ -3,34 +3,24 @@ package com.tcs.RestController;
 import com.tcs.model.Order;
 import com.tcs.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/orders")
-public class OrderController {
-    @Autowired
-    private OrderService orderService;
 
-    @PostMapping
-    public Order createOrder(@RequestBody Order order) {
-        return orderService.createOrder(order);
-    }
+    @RestController
+    @RequestMapping("/orders")
+    public class OrderController {
 
-    @GetMapping
-    public List<Order> getAllOrders() {
-        return orderService.getAllOrders();
-    }
+        @Autowired
+        private OrderService orderService;
 
-    @GetMapping("/{id}")
-    public Order getOrderById(@PathVariable String id) {
-        return orderService.getOrderById(id);
-    }
+        @GetMapping("/users-who-ordered")
+        public ResponseEntity<List<String>> getUsersWhoOrderedProduct(@RequestParam String productName) {
+            List<String> userNames = orderService.getUsersWhoOrderedProduct(productName);
+            return ResponseEntity.ok(userNames);
+        }
 
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable String id) {
-        orderService.deleteOrder(id);
-    }
 }
 

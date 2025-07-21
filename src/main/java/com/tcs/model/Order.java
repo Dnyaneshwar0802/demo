@@ -3,14 +3,16 @@ package com.tcs.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Document
 public class Order {
     @Id
     private String id;
-    private String customerName;
-    private List<String> productIds;
+    private String userId;                // Reference to User
+    private List<String> productIds;      // List of product IDs
+    private LocalDateTime orderedAt;
 
     public String getId() {
         return id;
@@ -20,12 +22,12 @@ public class Order {
         this.id = id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public List<String> getProductIds() {
@@ -34,5 +36,13 @@ public class Order {
 
     public void setProductIds(List<String> productIds) {
         this.productIds = productIds;
+    }
+
+    public LocalDateTime getOrderedAt() {
+        return orderedAt;
+    }
+
+    public void setOrderedAt(LocalDateTime orderedAt) {
+        this.orderedAt = orderedAt;
     }
 }
