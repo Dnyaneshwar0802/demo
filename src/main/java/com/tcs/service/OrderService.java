@@ -14,32 +14,31 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    @Autowired
-    private OrderRepository orderRepo;
+    @Autowired private OrderRepository orderRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private ProductRepository productRepository;
 
-    @Autowired
-    private ProductRepository productRepo;
+    public Order placeOrder(String userId, List<String> productIds) {
+        Order order = new Order();
+        order.setUserId(userId);
+        order.setProductIds(productIds);
+        return orderRepository.save(order);
+    }
 
-    @Autowired
-    private UserRepository userRepo;
-
-    public List<String> getUsersWhoOrderedProduct(String productName) {
-        // Find product by name
-        Product product = productRepo.findByName(productName)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        // Find orders containing this product
-        List<Order> orders = orderRepo.findByProductIdsContaining(product.getId());
-
-        // Extract user IDs from orders
+    public List<User> getUsersWhoOrderedProduct(String productId) {
+        List<Order> orders = orderRepository.findByProductIdsContaining(productId);
         Set<String> userIds = orders.stream()
                 .map(Order::getUserId)
                 .collect(Collectors.toSet());
+        return userRepository.findAllById(userIds);
+    }
 
-        // Fetch users
-        List<User> users = userRepo.findAllById(userIds);
-
-        // Return user names
-        return users.stream().map(User::getName).collect(Collectors.toList());
+    public List<Product> getProductsOrderedByUser(String userId) {
+        List<Order> orders = orderRepository.findAll()
+                .stream().filter(o -> o.getUserId().equals(userId)).toList();
+        Set<String> productIds = orders.stream()
+                .flatMap(o -> o.getProductIds().stream())
+                .collect(Collectors.toSet());
+        return productRepository.findAllById(productIds);
     }
 }
