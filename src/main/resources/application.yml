@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: demo
+  profiles:
+    active: dev  # Change to 'prod' for Firebase mode
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/springmongo
+      database: springmongo
+
+firebase:
+  config:
+    enable: false  # Firebase disabled in dev
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+firebase:
+  config:
+    path: classpath:firebase/firebase-service-account.json
+    enable: true  # Firebase enabled in prod
+
+# You can optionally disable MongoDB here if not using it in prod:
+# spring:
+#   data:
+#     mongodb:
+#       uri:
+#       database:
